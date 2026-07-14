@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DORIX AI — Build Your Brand with AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070c;
+    --bg-2:#0c0c16;
+    --violet:#7c5cff;
+    --cyan:#00e5ff;
+    --gold:#ffb84d;
+    --glass:rgba(255,255,255,0.045);
+    --glass-brd:rgba(255,255,255,0.09);
+    --text:#f2f1f7;
+    --text-dim:#9a97ab;
+    --text-dim2:#6b6878;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  ::selection{background:var(--violet);color:#fff;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+
+  /* ---------- background layers ---------- */
+  #particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  .orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.35;pointer-events:none;z-index:0;}
+  .orb1{width:520px;height:520px;background:radial-gradient(circle,var(--violet),transparent 70%);top:-160px;left:-140px;animation:float1 22s ease-in-out infinite;}
+  .orb2{width:460px;height:460px;background:radial-gradient(circle,var(--cyan),transparent 70%);top:20%;right:-180px;animation:float2 26s ease-in-out infinite;}
+  .orb3{width:380px;height:380px;background:radial-gradient(circle,var(--gold),transparent 70%);bottom:-120px;left:30%;opacity:.18;animation:float3 30s ease-in-out infinite;}
+  @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,80px)}}
+  @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,60px)}}
+  @keyframes float3{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-50px)}}
+
+  .noise{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  .wrap{position:relative;z-index:2;}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 5%;
+    backdrop-filter:blur(16px) saturate(140%);
+    background:rgba(7,7,12,0.55);
+    border-bottom:1px solid var(--glass-brd);
+  }
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:.3px;}
+  .logo-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--violet),var(--cyan));position:relative;flex:none;
+    box-shadow:0 0 22px rgba(124,92,255,.55);}
+  .logo-mark::after{content:'';position:absolute;inset:7px;border-radius:5px;background:var(--bg);}
+  .navlinks{display:flex;gap:34px;font-size:14.5px;color:var(--text-dim);}
+  .navlinks a{color:var(--text-dim);text-decoration:none;transition:color .25s;position:relative;}
+  .navlinks a:hover{color:var(--text);}
+  .navcta{display:flex;gap:12px;align-items:center;}
+  .btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;
+    padding:11px 22px;border-radius:11px;border:none;cursor:pointer;
+    transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, background .25s;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--glass-brd);}
+  .btn-ghost:hover{background:var(--glass);border-color:rgba(255,255,255,.2);}
+  .btn-primary{background:linear-gradient(135deg,var(--violet),#5a3fd6);color:#fff;box-shadow:0 8px 30px rgba(124,92,255,.35);}
+  .btn-primary:hover{box-shadow:0 10px 40px rgba(124,92,255,.55);transform:translateY(-2px);}
+  .btn-outline-cyan{background:transparent;border:1px solid rgba(0,229,255,.4);color:var(--cyan);}
+  .btn-outline-cyan:hover{background:rgba(0,229,255,.08);}
+  @media(max-width:900px){.navlinks{display:none;}}
+
+  /* ---------- hero ---------- */
+  header.hero{
+    padding:100px 5% 70px;
+    display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;
+    min-height:88vh;
+  }
+  @media(max-width:980px){header.hero{grid-template-columns:1fr;min-height:auto;padding-top:70px;}}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 14px;border-radius:100px;
+    background:var(--glass);border:1px solid var(--glass-brd);
+    font-size:12.5px;color:var(--text-dim);margin-bottom:26px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+  h1.hero-title{
+    font-size:clamp(38px,5.2vw,68px);
+    line-height:1.04;font-weight:700;letter-spacing:-1.5px;
+    margin-bottom:22px;
+  }
+  h1.hero-title .grad{
+    background:linear-gradient(100deg,var(--violet),var(--cyan) 60%,var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{font-size:17px;color:var(--text-dim);max-width:520px;line-height:1.65;margin-bottom:36px;}
+  .hero-actions{display:flex;gap:14px;margin-bottom:44px;flex-wrap:wrap;}
+  .btn-lg{padding:15px 28px;font-size:15px;border-radius:13px;}
+  .btn-play{display:inline-flex;align-items:center;gap:10px;}
+  .play-ic{width:34px;height:34px;border-radius:50%;background:var(--glass);border:1px solid var(--glass-brd);display:flex;align-items:center;justify-content:center;}
+  .trust-row{display:flex;gap:28px;flex-wrap:wrap;color:var(--text-dim2);font-size:13px;}
+  .trust-row b{color:var(--text);font-family:'Space Grotesk';font-size:20px;display:block;font-weight:600;}
+
+  /* signature: brand assembly canvas card */
+  .hero-visual{position:relative;height:520px;}
+  .assembly-card{
+    position:absolute;inset:0;
+    border-radius:28px;overflow:hidden;
+    background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));
+    border:1px solid var(--glass-brd);
+    backdrop-filter:blur(20px);
+    box-shadow:0 40px 90px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  #assemblyCanvas{width:100%;height:100%;display:block;}
+  .assembly-caption{
+    position:absolute;bottom:22px;left:22px;right:22px;
+    display:flex;justify-content:space-between;align-items:flex-end;
+  }
+  .assembly-caption .l1{font-size:12px;color:var(--text-dim2);}
+  .assembly-caption .l2{font-family:'Space Grotesk';font-weight:600;font-size:15px;}
+  .status-chip{padding:6px 12px;border-radius:100px;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);color:var(--cyan);font-size:11px;font-family:'JetBrains Mono';}
+
+  /* ---------- section shell ---------- */
+  section{padding:110px 5%;position:relative;}
+  .sec-head{max-width:640px;margin:0 auto 60px;text-align:center;}
+  .sec-eyebrow{color:var(--cyan);font-family:'JetBrains Mono';font-size:12.5px;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+  .sec-title{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-1px;margin-bottom:16px;}
+  .sec-sub{color:var(--text-dim);font-size:16px;line-height:1.6;}
+
+  /* ---------- tools ---------- */
+  .tool-featured{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:22px;
+  }
+  @media(max-width:980px){.tool-featured{grid-template-columns:1fr;}}
+  .tool-card{
+    background:var(--glass);border:1px solid var(--glass-brd);border-radius:20px;
+    padding:26px;transition:transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s, background .35s;
+  }
+  .tool-card:hover{transform:translateY(-6px);border-color:rgba(124,92,255,.4);background:rgba(255,255,255,.065);}
+  .tool-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:16px;
+    background:linear-gradient(135deg,rgba(124,92,255,.25),rgba(0,229,255,.15));border:1px solid rgba(255,255,255,.08);}
+  .tool-name{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;margin-bottom:6px;}
+  .tool-desc{color:var(--text-dim2);font-size:13px;margin-bottom:18px;line-height:1.5;}
+  .tool-input{
+    width:100%;background:rgba(0,0,0,.3);border:1px solid var(--glass-brd);border-radius:10px;
+    padding:10px 12px;color:var(--text);font-size:13.5px;font-family:'Inter';margin-bottom:12px;outline:none;
+  }
+  .tool-input:focus{border-color:var(--violet);}
+  .tool-btnrow{display:flex;gap:8px;margin-bottom:14px;}
+  .btn-sm{padding:9px 14px;font-size:12.5px;border-radius:9px;}
+  .tool-output{
+    background:rgba(0,0,0,.35);border:1px dashed var(--glass-brd);border-radius:10px;
+    padding:14px;font-size:13px;color:var(--text-dim);min-height:52px;margin-bottom:12px;line-height:1.55;
+  }
+  .out-actions{display:flex;gap:8px;}
+  .icon-btn{
+    width:32px;height:32px;border-radius:8px;background:var(--glass);border:1px solid var(--glass-brd);
+    color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:.2s;
+  }
+  .icon-btn:hover{color:var(--text);border-color:rgba(255,255,255,.25);}
+
+  .tool-grid-mini{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  @media(max-width:980px){.tool-grid-mini{grid-template-columns:repeat(2,1fr);}}
+  @media(min-width:981px) and (max-width:1200px){.tool-grid-mini{grid-template-columns:repeat(3,1fr);}}
+  .mini-card{
+    background:var(--glass);border:1px solid var(--glass-brd);border-radius:14px;padding:16px;
+    display:flex;flex-direction:column;gap:10px;transition:.3s;cursor:default;
+  }
+  .mini-card:hover{border-color:rgba(0,229,255,.35);transform:translateY(-3px);}
+  .mini-ic{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .mini-name{font-size:13px;font-weight:600;font-family:'Space Grotesk';}
+  .mini-tag{font-size:10.5px;color:var(--text-dim2);font-family:'JetBrains Mono';}
+
+  /* ---------- pricing ---------- */
+  .price-toggle{
+    display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:50px;
+  }
+  .toggle-track{
+    width:56px;height:30px;border-radius:100px;background:var(--glass);border:1px solid var(--glass-brd);
+    position:relative;cursor:pointer;
+  }
+  .toggle-knob{
+    position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;
+    background:linear-gradient(135deg,var(--violet),var(--cyan));transition:transform .3s cubic-bezier(.3,1.5,.5,1);
+  }
+  .toggle-track.on .toggle-knob{transform:translateX(26px);}
+  .save-badge{font-size:11.5px;background:rgba(255,184,77,.12);color:var(--gold);padding:4px 10px;border-radius:100px;border:1px solid rgba(255,184,77,.3);}
+
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1080px;margin:0 auto;}
+  @media(max-width:980px){.price-grid{grid-template-columns:1fr;}}
+  .price-card{
+    background:var(--glass);border:1px solid var(--glass-brd);border-radius:24px;padding:34px 28px;
+    display:flex;flex-direction:column;position:relative;overflow:hidden;
+  }
+  .price-card.featured{
+    border-color:rgba(124,92,255,.5);
+    background:linear-gradient(180deg,rgba(124,92,255,.09),rgba(255,255,255,.03));
+    transform:scale(1.04);box-shadow:0 30px 70px rgba(124,92,255,.25);
+  }
+  @media(max-width:980px){.price-card.featured{transform:scale(1);}}
+  .pop-badge{position:absolute;top:22px;right:24px;font-size:11px;font-family:'JetBrains Mono';color:var(--violet);background:rgba(124,92,255,.14);padding:5px 11px;border-radius:100px;border:1px solid rgba(124,92,255,.35);}
+  .plan-name{font-family:'Space Grotesk';font-weight:600;font-size:20px;margin-bottom:6px;}
+  .plan-desc{color:var(--text-dim2);font-size:13px;margin-bottom:22px;}
+  .plan-price{font-family:'Space Grotesk';font-size:44px;font-weight:700;margin-bottom:4px;}
+  .plan-price span{font-size:15px;color:var(--text-dim2);font-weight:500;font-family:'Inter';}
+  .plan-currency{font-size:12px;color:var(--text-dim2);margin-bottom:26px;font-family:'JetBrains Mono';}
+  .plan-feats{list-style:none;margin-bottom:28px;flex:1;}
+  .plan-feats li{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--text-dim);padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+  .plan-feats li .check{color:var(--cyan);flex:none;margin-top:1px;}
+  .plan-btn{width:100%;padding:13px;border-radius:12px;text-align:center;font-weight:600;font-size:14px;}
+
+  .pay-methods{
+    max-width:1080px;margin:56px auto 0;text-align:center;
+  }
+  .pay-methods .lbl{font-size:12px;color:var(--text-dim2);font-family:'JetBrains Mono';letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
+  .pay-icons{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+  .pay-chip{
+    display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:11px;
+    background:var(--glass);border:1px solid var(--glass-brd);font-size:13px;color:var(--text-dim);
+  }
+  .pay-chip b{color:var(--text);font-weight:600;}
+
+  /* ---------- feature strip ---------- */
+  .feat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  @media(max-width:980px){.feat-strip{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.feat-strip{grid-template-columns:1fr;}}
+  .feat-item{padding:26px;border-radius:18px;background:var(--glass);border:1px solid var(--glass-brd);}
+  .feat-item .ic{font-size:22px;margin-bottom:14px;}
+  .feat-item h4{font-family:'Space Grotesk';font-size:15.5px;margin-bottom:8px;font-weight:600;}
+  .feat-item p{font-size:13px;color:var(--text-dim2);line-height:1.55;}
+
+  /* ---------- cta ---------- */
+  .cta-band{
+    text-align:center;padding:90px 5%;margin:0 5%;border-radius:32px;
+    background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(0,229,255,.08));
+    border:1px solid var(--glass-brd);
+    position:relative;overflow:hidden;
+  }
+  .cta-band h2{font-size:clamp(26px,4vw,42px);margin-bottom:18px;letter-spacing:-1px;}
+  .cta-band p{color:var(--text-dim);margin-bottom:32px;}
+
+  /* ---------- footer ---------- */
+  footer{padding:70px 5% 34px;border-top:1px solid var(--glass-brd);margin-top:60px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:36px;margin-bottom:50px;}
+  @media(max-width:900px){.foot-grid{grid-template-columns:repeat(2,1fr);}}
+  .foot-col h5{font-family:'Space Grotesk';font-size:13.5px;margin-bottom:18px;color:var(--text-dim2);letter-spacing:1px;text-transform:uppercase;}
+  .foot-col a{display:block;color:var(--text-dim);text-decoration:none;font-size:13.5px;margin-bottom:12px;transition:.2s;}
+  .foot-col a:hover{color:var(--text);}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding-top:28px;border-top:1px solid var(--glass-brd);color:var(--text-dim2);font-size:12.5px;}
+  .socials{display:flex;gap:12px;}
+  .socials a{width:34px;height:34px;border-radius:9px;background:var(--glass);border:1px solid var(--glass-brd);display:flex;align-items:center;justify-content:center;color:var(--text-dim);text-decoration:none;font-size:13px;}
+
+  ::-webkit-scrollbar{width:9px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:#2a2836;border-radius:10px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="noise"></div>
+
+<div class="wrap">
+
+  <nav>
+    <div class="logo"><div class="logo-mark"></div>DORIX <span style="color:var(--text-dim);font-weight:500;">AI</span></div>
+    <div class="navlinks">
+      <a href="#home">Home</a>
+      <a href="#tools">AI Tools</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#templates">Templates</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="navcta">
+      <button class="btn btn-ghost">Log In</button>
+      <button class="btn btn-primary">Sign Up Free</button>
+    </div>
+  </nav>
+
+  <header class="hero" id="home">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> AI Brand Studio — Trusted in 40+ countries</div>
+      <h1 class="hero-title">Launch Your Brand<br>in <span class="grad">Minutes with AI</span></h1>
+      <p class="hero-sub">Generate business names, branding, marketing content, and creative assets using AI. From idea to identity — DORIX builds it with you.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg">Start Free</button>
+        <button class="btn btn-ghost btn-lg btn-play"><span class="play-ic">▶</span> Watch Demo</button>
+      </div>
+      <div class="trust-row">
+        <div><b>120K+</b>Brands generated</div>
+        <div><b>4.9/5</b>Average rating</div>
+        <div><b>13</b>AI tools included</div>
+        <div><b>40+</b>Countries served</div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="assembly-card">
+        <canvas id="assemblyCanvas"></canvas>
+        <div class="assembly-caption">
+          <div>
+            <div class="l1">Generating brand identity</div>
+            <div class="l2">"Lumen &amp; Co."</div>
+          </div>
+          <div class="status-chip">● LIVE</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FEATURES STRIP -->
+  <section id="features">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Why Dorix</div>
+      <h2 class="sec-title">Everything a brand needs, generated</h2>
+      <p class="sec-sub">A complete creative stack — naming, identity, copy and marketing — powered by AI and refined by you.</p>
+    </div>
+    <div class="feat-strip">
+      <div class="feat-item"><div class="ic">⚡</div><h4>Instant generation</h4><p>Get names, slogans, and copy in seconds — no blank page, ever.</p></div>
+      <div class="feat-item"><div class="ic">🎨</div><h4>Cohesive identity</h4><p>Colors, fonts and voice generated together so everything matches.</p></div>
+      <div class="feat-item"><div class="ic">🔒</div><h4>Secure by design</h4><p>Bank-grade encryption on every project, payment, and export.</p></div>
+      <div class="feat-item"><div class="ic">🌍</div><h4>Built for the world</h4><p>Multi-currency billing and localized output for global teams.</p></div>
+    </div>
+  </section>
+
+  <!-- AI TOOLS -->
+  <section id="tools">
+    <div class="sec-head">
+      <div class="sec-eyebrow">AI Brand Generator</div>
+      <h2 class="sec-title">13 tools. One creative brain.</h2>
+      <p class="sec-sub">Try three of our most-used generators below, live.</p>
+    </div>
+
+    <div class="tool-featured">
+      <div class="tool-card">
+        <div class="tool-ic">🏷️</div>
+        <div class="tool-name">Business Name Generator</div>
+        <div class="tool-desc">Describe your business and get distinctive, available-feeling names.</div>
+        <input class="tool-input" placeholder="e.g. minimalist skincare brand" id="in1">
+        <div class="tool-btnrow"><button class="btn btn-primary btn-sm" onclick="genTool(1)">Generate</button><button class="btn btn-ghost btn-sm" onclick="genTool(1)">↻ Regenerate</button></div>
+        <div class="tool-output" id="out1">Lumen &amp; Co. · Bare Theory · Northfield Skin</div>
+        <div class="out-actions"><div class="icon-btn" title="Copy">⧉</div><div class="icon-btn" title="Save">♡</div></div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-ic">✍️</div>
+        <div class="tool-name">Slogan Generator</div>
+        <div class="tool-desc">Punchy taglines that capture your brand's whole pitch in one line.</div>
+        <input class="tool-input" placeholder="e.g. eco-friendly coffee shop" id="in2">
+        <div class="tool-btnrow"><button class="btn btn-primary btn-sm" onclick="genTool(2)">Generate</button><button class="btn btn-ghost btn-sm" onclick="genTool(2)">↻ Regenerate</button></div>
+        <div class="tool-output" id="out2">"Brewed with a lighter footprint."</div>
+        <div class="out-actions"><div class="icon-btn" title="Copy">⧉</div><div class="icon-btn" title="Save">♡</div></div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-ic">🎨</div>
+        <div class="tool-name">Brand Color Generator</div>
+        <div class="tool-desc">A cohesive palette matched to your brand's mood and industry.</div>
+        <input class="tool-input" placeholder="e.g. luxury real estate" id="in3">
+        <div class="tool-btnrow"><button class="btn btn-primary btn-sm" onclick="genTool(3)">Generate</button><button class="btn btn-ghost btn-sm" onclick="genTool(3)">↻ Regenerate</button></div>
+        <div class="tool-output" id="out3" style="display:flex;gap:8px;align-items:center;">
+          <span style="width:22px;height:22px;border-radius:6px;background:#7c5cff;display:inline-block;"></span>
+          <span style="width:22px;height:22px;border-radius:6px;background:#0f0f1a;display:inline-block;border:1px solid #333;"></span>
+          <span style="width:22px;height:22px;border-radius:6px;background:#ffb84d;display:inline-block;"></span>
+          <span style="width:22px;height:22px;border-radius:6px;background:#f2f1f7;display:inline-block;"></span>
+        </div>
+        <div class="out-actions"><div class="icon-btn" title="Copy">⧉</div><div class="icon-btn" title="Save">♡</div></div>
+      </div>
+    </div>
+
+    <div class="tool-grid-mini">
+      <div class="mini-card"><div class="mini-ic">🖼️</div><div class="mini-name">Logo Idea Generator</div><div class="mini-tag">VISUAL</div></div>
+      <div class="mini-card"><div class="mini-ic">🔤</div><div class="mini-name">Font Pair Generator</div><div class="mini-tag">TYPE</div></div>
+      <div class="mini-card"><div class="mini-ic">🌐</div><div class="mini-name">Domain Suggestions</div><div class="mini-tag">WEB</div></div>
+      <div class="mini-card"><div class="mini-ic">📝</div><div class="mini-name">Website Copy Generator</div><div class="mini-tag">COPY</div></div>
+      <div class="mini-card"><div class="mini-ic">📱</div><div class="mini-name">Social Bio Generator</div><div class="mini-tag">SOCIAL</div></div>
+      <div class="mini-card"><div class="mini-ic">📸</div><div class="mini-name">Instagram Captions</div><div class="mini-tag">SOCIAL</div></div>
+      <div class="mini-card"><div class="mini-ic">📊</div><div class="mini-name">Marketing Plan Generator</div><div class="mini-tag">STRATEGY</div></div>
+      <div class="mini-card"><div class="mini-ic">🛍️</div><div class="mini-name">Product Description</div><div class="mini-tag">COPY</div></div>
+      <div class="mini-card"><div class="mini-ic">📦</div><div class="mini-name">Packaging Ideas</div><div class="mini-tag">VISUAL</div></div>
+      <div class="mini-card"><div class="mini-ic">📣</div><div class="mini-name">Ad Copy Generator</div><div class="mini-tag">ADS</div></div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Pricing</div>
+      <h2 class="sec-title">Simple plans, global currencies</h2>
+      <p class="sec-sub">Billed in USD, EUR, GBP, NPR and more. Cancel anytime, taxes calculated automatically at checkout.</p>
+    </div>
+
+    <div class="price-toggle">
+      <span class="mono" style="font-size:13px;color:var(--text-dim);">Monthly</span>
+      <div class="toggle-track" id="toggle" onclick="toggleBilling()"><div class="toggle-knob"></div></div>
+      <span class="mono" style="font-size:13px;color:var(--text-dim);">Yearly</span>
+      <span class="save-badge">Save 20%</span>
+    </div>
+
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-desc">Try the essentials, no card required.</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-currency">USD · forever</div>
+        <ul class="plan-feats">
+          <li><span class="check">✓</span> Limited AI generations / day</li>
+          <li><span class="check">✓</span> Basic branding tools</li>
+          <li><span class="check">✓</span> Watermarked exports</li>
+          <li><span class="check">✓</span> 1 saved project</li>
+        </ul>
+        <button class="btn btn-ghost plan-btn">Start Free</button>
+      </div>
+
+      <div class="price-card featured">
+        <div class="pop-badge">MOST POPULAR</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-desc">For creators and freelancers building real brands.</div>
+        <div class="plan-price" id="proPrice">$19<span>/mo</span></div>
+        <div class="plan-currency" id="proSub">billed monthly · USD</div>
+        <ul class="plan-feats">
+          <li><span class="check">✓</span> Unlimited AI generations</li>
+          <li><span class="check">✓</span> Premium branding tools</li>
+          <li><span class="check">✓</span> Priority AI speed</li>
+          <li><span class="check">✓</span> High-quality exports</li>
+          <li><span class="check">✓</span> Unlimited saved projects</li>
+          <li><span class="check">✓</span> Premium templates</li>
+        </ul>
+        <button class="btn btn-primary plan-btn">Go Pro</button>
+      </div>
+
+      <div class="price-card">
+        <div class="plan-name">Business</div>
+        <div class="plan-desc">For agencies and teams managing many brands.</div>
+        <div class="plan-price" id="bizPrice">$49<span>/mo</span></div>
+        <div class="plan-currency" id="bizSub">billed monthly · USD</div>
+        <ul class="plan-feats">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> Team members &amp; shared workspace</li>
+          <li><span class="check">✓</span> API access</li>
+          <li><span class="check">✓</span> Brand management console</li>
+          <li><span class="check">✓</span> Analytics dashboard</li>
+          <li><span class="check">✓</span> Priority support</li>
+        </ul>
+        <button class="btn btn-outline-cyan plan-btn">Contact Sales</button>
+      </div>
+    </div>
+
+    <div class="pay-methods">
+      <div class="lbl">Secure checkout, worldwide</div>
+      <div class="pay-icons">
+        <div class="pay-chip"><b>VISA</b> Credit &amp; Debit</div>
+        <div class="pay-chip"><b>Mastercard</b> Credit &amp; Debit</div>
+        <div class="pay-chip"><b>Amex</b></div>
+         <div class="pay-chip"><b></b> Apple Pay</div>
+        <div class="pay-chip"><b>G Pay</b> Google Pay</div>
+        <div class="pay-chip"><b>PayPal</b></div>
+        <div class="pay-chip"><b>Stripe</b> Powered</div>
+        <div class="pay-chip"><b>🏦</b> Bank Cards</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <h2>Your brand is one prompt away.</h2>
+    <p>Join 120,000+ founders who started with DORIX AI.</p>
+    <button class="btn btn-primary btn-lg">Start Free — No Card Required</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-grid">
+      <div class="foot-col">
+        <div class="logo" style="margin-bottom:14px;"><div class="logo-mark"></div>DORIX AI</div>
+        <p style="color:var(--text-dim2);font-size:13px;line-height:1.6;max-width:260px;">Build your brand with AI. Naming, identity, copy and marketing — generated in minutes.</p>
+      </div>
+      <div class="foot-col"><h5>Product</h5>
+        <a href="#features">Features</a><a href="#tools">AI Tools</a><a href="#pricing">Pricing</a><a href="#templates">Templates</a>
+      </div>
+      <div class="foot-col"><h5>Company</h5>
+        <a href="#about">About</a><a href="#careers">Careers</a><a href="#blog">Blog</a><a href="#contact">Contact</a>
+      </div>
+      <div class="foot-col"><h5>Resources</h5>
+        <a href="#support">Support</a><a href="#dashboard">Dashboard</a><a href="#login">Log In</a><a href="#signup">Sign Up</a>
+      </div>
+      <div class="foot-col"><h5>Legal</h5>
+        <a href="#privacy">Privacy Policy</a><a href="#terms">Terms of Service</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 DORIX AI. All rights reserved.</div>
+      <div class="socials">
+        <a href="#" aria-label="X">𝕏</a>
+        <a href="#" aria-label="Instagram">◎</a>
+        <a href="#" aria-label="LinkedIn">in</a>
+        <a href="#" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // ---------- particle background ----------
+  const pc = document.getElementById('particles');
+  const pctx = pc.getContext('2d');
+  function resizeP(){pc.width=innerWidth;pc.height=innerHeight;}
+  resizeP(); window.addEventListener('resize',resizeP);
+  const N = window.innerWidth < 700 ? 40 : 90;
+  const parts = Array.from({length:N},()=>({
+    x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+    r:Math.random()*1.6+0.4, vx:(Math.random()-.5)*.15, vy:(Math.random()-.5)*.15,
+    a:Math.random()*.5+.15
+  }));
+  function drawP(){
+    pctx.clearRect(0,0,pc.width,pc.height);
+    for(const p of parts){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=pc.width; if(p.x>pc.width)p.x=0;
+      if(p.y<0)p.y=pc.height; if(p.y>pc.height)p.y=0;
+      pctx.beginPath();
+      pctx.fillStyle=`rgba(180,170,255,${p.a})`;
+      pctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      pctx.fill();
+    }
+    requestAnimationFrame(drawP);
+  }
+  drawP();
+
+  // ---------- hero signature: brand assembly animation ----------
+  const ac = document.getElementById('assemblyCanvas');
+  const actx = ac.getContext('2d');
+  function resizeA(){
+    const rect = ac.parentElement.getBoundingClientRect();
+    ac.width = rect.width; ac.height = rect.height;
+  }
+  resizeA(); window.addEventListener('resize',resizeA);
+
+  // target points forming a simple abstract emblem (circle of nodes + core)
+  function buildTargets(w,h){
+    const cx=w/2, cy=h/2-20, R=Math.min(w,h)*0.24;
+    const pts=[];
+    const ring=28;
+    for(let i=0;i<ring;i++){
+      const ang=(i/ring)*Math.PI*2;
+      pts.push({x:cx+Math.cos(ang)*R,y:cy+Math.sin(ang)*R});
+    }
+    for(let i=0;i<10;i++){
+      const ang=(i/10)*Math.PI*2;
+      pts.push({x:cx+Math.cos(ang)*R*0.5,y:cy+Math.sin(ang)*R*0.5});
+    }
+    pts.push({x:cx,y:cy});
+    return pts;
+  }
+
+  let targets = buildTargets(ac.width, ac.height);
+  window.addEventListener('resize',()=>{ targets = buildTargets(ac.width, ac.height); });
+
+  const dust = targets.map(t=>({
+    x: Math.random()*ac.width, y: Math.random()*ac.height,
+    tx: t.x, ty: t.y,
+    hue: Math.random()<0.5? '124,92,255' : '0,229,255'
+  }));
+
+  let phase=0;
+  function drawA(){
+    actx.clearRect(0,0,ac.width,ac.height);
+    // subtle grid
+    actx.strokeStyle='rgba(255,255,255,0.03)';
+    for(let x=0;x<ac.width;x+=34){actx.beginPath();actx.moveTo(x,0);actx.lineTo(x,ac.height);actx.stroke();}
+    for(let y=0;y<ac.height;y+=34){actx.beginPath();actx.moveTo(0,y);actx.lineTo(ac.width,y);actx.stroke();}
+
+    phase += 0.006;
+    const settle = (Math.sin(phase)+1)/2; // 0..1 breathing pull strength
+
+    dust.forEach((d,i)=>{
+      const pull = 0.02 + settle*0.04;
+      d.x += (d.tx - d.x) * pull;
+      d.y += (d.ty - d.y) * pull;
+    });
+
+    // connecting lines
+    actx.strokeStyle='rgba(124,92,255,0.18)';
+    actx.lineWidth=1;
+    for(let i=0;i<28;i++){
+      const a=dust[i], b=dust[(i+1)%28];
+      actx.beginPath();actx.moveTo(a.x,a.y);actx.lineTo(b.x,b.y);actx.stroke();
+    }
+
+    dust.forEach(d=>{
+      actx.beginPath();
+      const grad = actx.createRadialGradient(d.x,d.y,0,d.x,d.y,7);
+      grad.addColorStop(0,`rgba(${d.hue},0.9)`);
+      grad.addColorStop(1,`rgba(${d.hue},0)`);
+      actx.fillStyle=grad;
+      actx.arc(d.x,d.y,7,0,Math.PI*2);
+      actx.fill();
+      actx.beginPath();
+      actx.fillStyle=`rgba(${d.hue},1)`;
+      actx.arc(d.x,d.y,1.6,0,Math.PI*2);
+      actx.fill();
+    });
+
+    requestAnimationFrame(drawA);
+  }
+  drawA();
+
+  // ---------- tool demo interactions ----------
+  const toolOutputs = {
+    1: ["Lumen & Co. · Bare Theory · Northfield Skin","Havenwell · Pale Grove · Auric Skin Co.","Meridian Bare · Softline · The Clearwell"],
+    2: ['"Brewed with a lighter footprint."','"Coffee, kinder to the planet."','"Every cup, better grounded."'],
+  };
+  function genTool(n){
+    const el = document.getElementById('out'+n);
+    if(n===3) return; // color swatches stay static for demo
+    const opts = toolOutputs[n];
+    el.style.opacity=0;
+    setTimeout(()=>{
+      el.textContent = opts[Math.floor(Math.random()*opts.length)];
+      el.style.opacity=1;
+    },180);
+  }
+
+  // ---------- pricing toggle ----------
+  let yearly=false;
+  function toggleBilling(){
+    yearly=!yearly;
+    document.getElementById('toggle').classList.toggle('on',yearly);
+    const proPrice=document.getElementById('proPrice');
+    const bizPrice=document.getElementById('bizPrice');
+    const proSub=document.getElementById('proSub');
+    const bizSub=document.getElementById('bizSub');
+    if(yearly){
+      proPrice.innerHTML='$15<span>/mo</span>';
+      bizPrice.innerHTML='$39<span>/mo</span>';
+      proSub.textContent='billed yearly · USD';
+      bizSub.textContent='billed yearly · USD';
+    }else{
+      proPrice.innerHTML='$19<span>/mo</span>';
+      bizPrice.innerHTML='$49<span>/mo</span>';
+      proSub.textContent='billed monthly · USD';
+      bizSub.textContent='billed monthly · USD';
+    }
+  }
+</script>
+</body>
+</html>
